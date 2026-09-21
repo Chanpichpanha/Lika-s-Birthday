@@ -381,7 +381,7 @@ const spreads=[
         <div style="position:absolute; top:50%; left:50%; width:150%; height:150%; transform:translate(-50%, -50%); background:radial-gradient(circle, rgba(255,182,193,0.3) 0%, transparent 60%); pointer-events:none; z-index:0;"></div>
         <div style="width:92%; background:#fff; padding:16px 16px 20px 16px; border-radius:6px; box-shadow:0 25px 50px rgba(110,85,100,0.2), inset 0 0 0 1px rgba(0,0,0,0.05); position:relative; z-index:1; display:flex; flex-direction:column; align-items:center;">
           <div style="width:100%; padding:3px; background:linear-gradient(135deg, #ffd77d 0%, #e6c875 50%, #fdf0a6 100%); border-radius:4px; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
-            <img src="/assets/drafts/lika4.png" style="width:100%; height:260px; object-fit:cover; border-radius:2px; display:block; filter:contrast(1.05) brightness(1.02);">
+            <img src="/assets/drafts/lika4.jpg" style="width:100%; height:260px; object-fit:cover; border-radius:2px; display:block; filter:contrast(1.05) brightness(1.02);">
           </div>
           <h2 style="color:#a87d92; font-size:26px; font-style:italic; font-weight:600; letter-spacing:1px; margin:0; text-align:center; font-family:Georgia, serif; text-shadow:0 1px 2px rgba(255,255,255,0.8);">To be continued...</h2>
           <div style="width:50px; height:2px; background:linear-gradient(90deg, transparent, #ff8eb5, transparent); margin:12px auto 0;"></div>

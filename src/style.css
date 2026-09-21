@@ -145,11 +145,11 @@ h1 em { color: var(--berry); font-style: normal; }
 .help-grid p { margin:0; color:#766374; font-size:13px; line-height:1.5; }.help-grid strong { color:var(--ink); }
 .key-cluster, .mouse-icon, .big-key { display:grid; place-items:center; flex:0 0 58px; min-height:50px; background:#f7eaf1; color:var(--berry); border-radius:13px; font-weight:800; line-height:1; text-align:center; }
 
-.book-modal { z-index:50; background:radial-gradient(circle at 50% 30%, rgba(241,186,195,.15), rgba(30,18,29,.78)); backdrop-filter:blur(12px); padding:24px; }
-.book-stage { width:min(1050px, 96vw); }
+.book-modal { z-index:50; background:radial-gradient(circle at 50% 30%, rgba(241,186,195,.15), rgba(30,18,29,.78)); backdrop-filter:blur(12px); overflow:hidden; }
+.book-stage { width:1050px; transform:scale(min(1, calc(100vw / 1080), calc(100vh / 750))); transform-origin:center center; }
 .book-header { display:flex; align-items:end; justify-content:space-between; color:white; margin:0 6px 18px; position:relative; }
 .book-header > div { display:flex; flex-direction:column; }.book-header strong { font:600 21px "Fredoka"; margin-top:2px; }.book-header .close-btn { position:static; }.close-btn.light { background:rgba(255,255,255,.14); color:white; }
-.book { height:min(625px, 72vh); display:grid; grid-template-columns:1fr 1fr; position:relative; filter:drop-shadow(0 28px 35px rgba(23,10,20,.35)); perspective:1800px; transform-style:preserve-3d; }
+.book { height:625px; display:grid; grid-template-columns:1fr 1fr; position:relative; filter:drop-shadow(0 28px 35px rgba(23,10,20,.35)); perspective:1800px; transform-style:preserve-3d; }
 .book::before { content:""; position:absolute; inset:7px -8px -8px; border-radius:23px; background:#b45e71; z-index:-1; }
 .book-spine { position:absolute; z-index:4; width:28px; height:calc(100% - 12px); left:50%; top:6px; transform:translateX(-50%); background:linear-gradient(90deg,rgba(96,57,65,.16),rgba(255,255,255,.35),rgba(96,57,65,.14)); border-radius:40%; pointer-events:none; }
 .book-page { background-color:#fffaf0; padding:48px 52px 36px; position:relative; overflow:hidden; z-index:1; }
@@ -200,7 +200,6 @@ h1 em { color: var(--berry); font-style: normal; }
 @media (max-width: 760px) {
   #hud { inset:12px; grid-template-columns:1fr auto; }.brand-pill { display:none; }.objective-pill { justify-self:start; min-width:0; }.hud-actions { grid-column:2; }
   .intro-card { padding:45px 24px 34px; }.control-row { gap:10px; flex-wrap:wrap; }.intro-note { display:none; }
-  .book-stage { width:900px; transform:scale(calc(100vw / 940)); transform-origin:center center; }
   .help-grid { grid-template-columns:1fr; max-height:62vh; overflow:auto; }.help-card { padding:32px 22px; }
 }
 @media (hover:hover) and (pointer:fine) { .mobile-controls { display:none !important; } }
