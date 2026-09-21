@@ -316,8 +316,8 @@ const spreads=[
   [
     {k:'CHAPTER 01',t:'Birthday Wishes',type:'custom',html:`
       <div style="text-align: left; padding: 0 5px;">
-        <div style="font-size: 14.5px; line-height: 32px; background-image: linear-gradient(to bottom, transparent 31px, #e5cbd6 32px); background-size: 100% 32px; color: #6e5564; margin-top: 10px; padding-bottom: 5px;">
-          <b style="color: #d94f7d; font-size: 16.5px;">Happy Birthday to my amazing sisturrrr!🎂</b><br>
+        <div style="font-size: 13.5px; line-height: 32px; background-image: linear-gradient(to bottom, transparent 31px, #e5cbd6 32px); background-size: 100% 32px; color: #6e5564; margin-top: 10px; padding-bottom: 5px;">
+          <b style="color: #d94f7d; font-size: 15px;">Happy Birthday to my amazing sisturrrr!🎂</b><br>
           I hope your day is full of happiness, laughter, and lots of cake.<br>
           Your foopa may be so fkin hard sometimes, but I guess that’s part of your nature lol<br>
           Keep being kind, strong, and the wonderful person you are.<br>
@@ -331,8 +331,14 @@ const spreads=[
         <div style="position:absolute; bottom:40px; right:30px; font-size:32px; opacity:0.4;">💖</div>
         <div style="position:absolute; top:80px; right:40px; font-size:20px; opacity:0.7;">🎂</div>
         <div style="position:absolute; bottom:90px; left:30px; font-size:20px; opacity:0.5;">🍭</div>
-        <div style="padding: 45px 35px; border: 2px dashed #ff8eb5; border-radius: 20px; background: rgba(255,142,181,0.06);">
-          <h2 style="color: #ff8eb5; font-size: 32px; font-style: italic; line-height: 1.3; text-align:center; margin:0;">"Forever Beside U."</h2>
+        
+        <div style="border: 2px dashed #f19eb8; padding: 30px; border-radius: 20px; background: rgba(255,240,245,0.4); text-align: center;">
+          <div style="font-family: 'Fredoka', sans-serif; font-size: 14px; color: #d94f7d; font-weight: 600; opacity: 0.8; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">
+            one sentences to you
+          </div>
+          <div style="font-family: 'Fredoka', sans-serif; font-size: 28px; color: #f27ba0; font-weight: 700; font-style: italic; text-shadow: 1px 1px 0px #fff;">
+            "Forever <br> Beside U."
+          </div>
         </div>
       </div>
     `}
