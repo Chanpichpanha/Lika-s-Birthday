@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f9a8c2" />
+    <meta name="description" content="A tiny first-person candy birthday adventure." />
+    <title>Lika Birthdays</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="game" aria-label="3D game canvas"></div>
+
+    <div id="vignette"></div>
+    <div id="crosshair" aria-hidden="true"><span></span></div>
+
+    <header id="hud" class="hidden" aria-live="polite">
+      <div class="brand-pill">
+        <span class="brand-mark">✦</span>
+        <div><small>BIRTHDAY GIFT</small><strong>Lika's Surprise</strong></div>
+      </div>
+      <div id="objective" class="objective-pill">
+        <span class="objective-dot"></span>
+        <div><small>YOUR NEXT STEP</small><strong id="objective-text">ដើរតាមស្ករវង់មូលនឹងទៅ!</strong></div>
+      </div>
+      <div class="hud-actions">
+        <button id="sound-btn" class="round-btn" aria-label="Toggle sound" aria-pressed="false" title="Toggle sound and music">♫</button>
+        <button id="help-btn" class="round-btn" aria-label="Show controls" title="Show controls">?</button>
+      </div>
+    </header>
+
+    <div id="interact" class="interact hidden" aria-live="polite">
+      <span class="key">E</span>
+      <span id="interact-text">បើកទ្វាទៅកុំចាំប្រាប់ច្រើនពេក!</span>
+    </div>
+
+    <div id="dialogue" class="dialogue hidden" aria-live="polite">
+      <div class="avatar">F</div>
+      <div><small>FINN</small><p id="dialogue-text">ហាយប្អូនស្រី! ​បើកកាដូទៅ!</p></div>
+    </div>
+
+    <div id="toast" class="toast hidden" aria-live="polite"></div>
+
+    <section id="intro" class="screen visible" aria-labelledby="game-title">
+      <div class="intro-atmosphere" aria-hidden="true">
+        <span class="candy-orb orb-1"></span><span class="candy-orb orb-2"></span><span class="candy-orb orb-3"></span>
+        <span class="intro-glyph glyph-1">✦</span><span class="intro-glyph glyph-2">♡</span>
+        <span class="intro-glyph glyph-3">✦</span><span class="intro-glyph glyph-4">●</span>
+      </div>
+      <div class="floating-sprinkle s1"></div><div class="floating-sprinkle s2"></div>
+      <div class="floating-sprinkle s3"></div><div class="floating-sprinkle s4"></div>
+      <div class="intro-card">
+        <div class="eyebrow">From ចាន់​ ពេច្របញ្ញា (Finn)..</div>
+        <h1 id="game-title">Tra Rothlika's<br/><em>SP Surprise</em></h1>
+        <p>Happy 19th Birthday kweennn! here's a 3D game i made for ur birthday, Hope u like it hoee&lt;3</p>
+        <button id="start-btn" class="primary-btn"><span>Enter The Game</span><b>→</b></button>
+        <div class="control-row" aria-label="Game controls">
+          <span><i>WASD</i> Move</span><span><i>SHIFT</i> Sprint</span><span><i>SPACE</i> Jump</span><span><i>DRAG</i> Look</span>
+        </div>
+      </div>
+      <div class="intro-note">Best when sound on tho · Press ESC to pause</div>
+    </section>
+
+    <section id="pause" class="screen" aria-labelledby="pause-title">
+      <div class="pause-card">
+        <div class="eyebrow">TAKE A BREATH</div>
+        <h2 id="pause-title">Story paused</h2>
+        <p>Pause for what? Resume kr ban replay kr ban tam besdong</p>
+        <button id="resume-btn" class="primary-btn"><span>Continue</span><b>→</b></button>
+        <button id="restart-btn" class="text-btn">Restart</button>
+      </div>
+    </section>
+
+    <section id="help" class="modal hidden" aria-labelledby="help-title">
+      <div class="help-card">
+        <button class="close-btn" data-close="help" aria-label="Close controls">×</button>
+        <div class="eyebrow">HOW TO PLAY</div>
+        <h2 id="help-title">guide how to play</h2>
+        <div class="help-grid">
+          <div><span class="key-cluster">W<br/>A S D</span><p><strong>Walk around</strong><br/>Use the keys to explore.</p></div>
+          <div><span class="mouse-icon">↖</span><p><strong>Look around</strong><br/>Hold and drag your mouse.</p></div>
+          <div><span class="big-key">⇧</span><p><strong>Sprint</strong><br/>Hold Shift while moving.</p></div>
+          <div><span class="big-key">␣</span><p><strong>Jump</strong><br/>Press Space while grounded.</p></div>
+          <div><span class="big-key">E</span><p><strong>Interact</strong><br/>Open doors and gifts.</p></div>
+          <div><span class="big-key">ESC</span><p><strong>Pause</strong><br/>Open the pause menu.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="passcode-modal" class="modal hidden" aria-labelledby="passcode-title">
+      <div class="pause-card">
+        <button class="close-btn" data-close="passcode" aria-label="Close">×</button>
+        <div class="eyebrow">SECRET REQUIRED</div>
+        <h2 id="passcode-title">Enter Passcode</h2>
+        <input type="password" id="passcode-input" placeholder="******" style="margin:24px 0 10px 0; padding:12px; font-size:24px; text-align:center; border:2px solid #ff8eb5; border-radius:14px; outline:none; font-family:'Fredoka',sans-serif; color:var(--ink); width:200px;" />
+        <p style="margin: 0 0 20px 0; font-size:13px; color:#a28898; font-weight:700;">hint: k'mey BD!!</p>
+        <button id="passcode-submit" class="primary-btn" style="min-width:200px;"><span>Unlock</span><b>→</b></button>
+        <p id="passcode-error" style="color:#d94f7d; margin-top:16px; font-weight:700; display:none; animation:pop .2s ease-out;">Incorrect passcode!</p>
+      </div>
+    </section>
+
+    <section id="book-modal" class="book-modal hidden" aria-labelledby="book-title">
+      <div class="book-stage">
+        <div class="book-header">
+          <div><small>YOUR BIRTHDAY LETTER BOOK</small><strong id="book-title">A little book for you</strong></div>
+          <button id="book-close" class="close-btn light" aria-label="Close book">×</button>
+        </div>
+        <div class="book" id="book">
+          <div class="book-spine"></div>
+          <div id="page-turn-sheet" class="page-turn-sheet" aria-hidden="true">
+            <div id="turn-front" class="turn-face turn-front"></div>
+            <div id="turn-back" class="turn-face turn-back"></div>
+          </div>
+          <article class="book-page left-page">
+            <div class="page-kicker" id="left-kicker">CHAPTER 01</div>
+            <h2 id="left-title">Birthday Wishes</h2>
+            <div id="left-content" class="page-content"></div>
+            <div class="page-number" id="left-number">01</div>
+          </article>
+          <article class="book-page right-page">
+            <div class="page-kicker" id="right-kicker">A NOTE FOR YOU</div>
+            <h2 id="right-title">Reserved with love</h2>
+            <div id="right-content" class="page-content"></div>
+            <div class="page-number" id="right-number">02</div>
+          </article>
+        </div>
+        <div class="book-controls">
+          <button id="prev-page" class="page-btn">← <span>Previous</span></button>
+          <div id="page-dots" class="page-dots" aria-label="Book progress"></div>
+          <button id="next-page" class="page-btn"><span>Next</span> →</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="mobile-controls" class="mobile-controls hidden" aria-label="Touch controls">
+      <div id="look-zone" class="look-zone" aria-hidden="true"></div>
+      <div id="move-stick" class="move-stick" aria-label="Movement joystick">
+        <span class="stick-ring"></span><span id="stick-thumb" class="stick-thumb"></span>
+      </div>
+      <div class="mobile-actions">
+        <button id="mobile-sprint" class="touch-btn sprint-btn" aria-label="Toggle sprint"><span>⇧</span><small>Sprint</small></button>
+        <button id="mobile-jump" class="touch-btn jump-btn" aria-label="Jump"><span>↑</span><small>Jump</small></button>
+        <button id="mobile-interact" class="touch-btn interact-btn" aria-label="Interact"><span>✦</span><small>Use</small></button>
+      </div>
+    </section>
+
+    <div id="rotate-hint" class="rotate-hint">↻ Rotate your phone for the best view</div>
+    <script type="module" src="/src/game.js"></script>
+  </body>
+</html>
