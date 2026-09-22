@@ -50,7 +50,6 @@ addEventListener('resize', checkOrientation);
 addEventListener('orientationchange', checkOrientation);
 checkOrientation();
 
-const singlePageBook = () => mobileBookMedia.matches;
 const introCard=$('.intro-card'),startButton=$('#start-btn');
 if(!isTouch&&!reducedMotion){
   let pointerFrame=0,pointerX=0,pointerY=0;
