@@ -23,7 +23,7 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const isStandalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
 const mobileBookMedia = matchMedia('(max-width: 950px)');
-const viewportSize=()=>({width:Math.round(window.visualViewport?.width||innerWidth),height:Math.round(window.visualViewport?.height||innerHeight)});
+const viewportSize=()=>({width:window.innerWidth,height:window.innerHeight});
 function syncAppHeight(){document.documentElement.style.setProperty('--app-height',`${viewportSize().height}px`);}
 syncAppHeight();
 
@@ -552,7 +552,7 @@ animate();
 function resizeExperience(){
   syncAppHeight();const {width,height}=viewportSize();camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,isTouch?1.35:1.85));renderer.setSize(width,height,false);
 }
-addEventListener('resize',resizeExperience);addEventListener('orientationchange',()=>{clearInput();setTimeout(resizeExperience,120);});window.visualViewport?.addEventListener('resize',resizeExperience);document.addEventListener('fullscreenchange',resizeExperience);
+addEventListener('resize',resizeExperience);addEventListener('orientationchange',()=>{clearInput();setTimeout(resizeExperience,120); setTimeout(resizeExperience,300); setTimeout(resizeExperience,600); }); window.visualViewport?.addEventListener('resize',resizeExperience);document.addEventListener('fullscreenchange',resizeExperience);
 mobileBookMedia.addEventListener?.('change',()=>{if(els.bookModal.classList.contains('hidden'))return;mobilePage=pageSpread*2;renderBook(pageSpread);});
 
 // Non-advertised art-direction views for reviewing the scene without changing game progress.
