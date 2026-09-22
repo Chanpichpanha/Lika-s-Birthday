@@ -23,7 +23,7 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const isStandalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
 const mobileBookMedia = matchMedia('(max-width: 950px)');
-const viewportSize=()=>({width:window.innerWidth,height:window.innerHeight});
+const viewportSize=()=>({width:els.game.clientWidth,height:els.game.clientHeight});
 function syncAppHeight(){document.documentElement.style.setProperty('--app-height',`${viewportSize().height}px`);}
 syncAppHeight();
 
