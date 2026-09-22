@@ -2,10 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#f9a8c2" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Lika's Surprise" />
     <meta name="description" content="A tiny first-person candy birthday adventure." />
     <title>Lika Birthdays</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/candy-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/candy-icon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -59,6 +65,7 @@
         <div class="control-row" aria-label="Game controls">
           <span><i>WASD</i> Move</span><span><i>SHIFT</i> Sprint</span><span><i>SPACE</i> Jump</span><span><i>DRAG</i> Look</span>
         </div>
+        <button id="install-tip" class="install-tip hidden" type="button"><span>▣</span> Play without Safari bars</button>
       </div>
       <div class="intro-note">Best when sound on tho · Press ESC to pause</div>
     </section>
@@ -98,6 +105,22 @@
         <p style="margin: 0 0 20px 0; font-size:13px; color:#a28898; font-weight:700;">hint: k'mey BD!!</p>
         <button id="passcode-submit" class="primary-btn" style="min-width:200px;"><span>Unlock</span><b>→</b></button>
         <p id="passcode-error" style="color:#d94f7d; margin-top:16px; font-weight:700; display:none; animation:pop .2s ease-out;">Incorrect passcode!</p>
+      </div>
+    </section>
+
+    <section id="install-guide" class="modal hidden" aria-labelledby="install-title">
+      <div class="install-card">
+        <button class="close-btn" data-close="install" aria-label="Close installation guide">×</button>
+        <div class="install-icon" aria-hidden="true">✦</div>
+        <div class="eyebrow">FULL-SCREEN MODE</div>
+        <h2 id="install-title">Keep the surprise on your Home Screen</h2>
+        <p>Safari cannot hide its bars from a normal link. Install this tiny web app once, then open it like a game.</p>
+        <ol class="install-steps">
+          <li><span>1</span> Tap Safari’s <strong>Share</strong> button.</li>
+          <li><span>2</span> Choose <strong>Add to Home Screen</strong>.</li>
+          <li><span>3</span> Open <strong>Lika’s Surprise</strong> from the new icon.</li>
+        </ol>
+        <button class="primary-btn install-done" data-close="install"><span>Got it</span><b>✓</b></button>
       </div>
     </section>
 

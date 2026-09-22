@@ -11,7 +11,8 @@ const els = {
   moveStick: $('#move-stick'), stickThumb: $('#stick-thumb'), lookZone: $('#look-zone'),
   mobileSprint: $('#mobile-sprint'), mobileJump: $('#mobile-jump'), mobileInteract: $('#mobile-interact'),
   turnSheet: $('#page-turn-sheet'), turnFront: $('#turn-front'), turnBack: $('#turn-back'),
-  passcodeModal: $('#passcode-modal'), passcodeInput: $('#passcode-input'), passcodeSubmit: $('#passcode-submit'), passcodeError: $('#passcode-error')
+  passcodeModal: $('#passcode-modal'), passcodeInput: $('#passcode-input'), passcodeSubmit: $('#passcode-submit'), passcodeError: $('#passcode-error'),
+  installTip: $('#install-tip'), installGuide: $('#install-guide')
 };
 
 const scene = new THREE.Scene();
@@ -19,6 +20,12 @@ scene.background = new THREE.Color(0x6d8fb5);
 scene.fog = new THREE.Fog(0xf4bbce, 34, 90);
 const isTouch = matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isStandalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
+const mobileBookMedia = matchMedia('(max-width: 950px)');
+const viewportSize=()=>({width:Math.round(window.visualViewport?.width||innerWidth),height:Math.round(window.visualViewport?.height||innerHeight)});
+function syncAppHeight(){document.documentElement.style.setProperty('--app-height',`${viewportSize().height}px`);}
+syncAppHeight();
 
 const introCard=$('.intro-card'),startButton=$('#start-btn');
 if(!isTouch&&!reducedMotion){
@@ -30,10 +37,19 @@ if(!isTouch&&!reducedMotion){
   startButton.addEventListener('pointerleave',()=>{startButton.style.setProperty('--magnet-x','0px');startButton.style.setProperty('--magnet-y','0px');});
 }
 
-const camera = new THREE.PerspectiveCamera(68, innerWidth / innerHeight, 0.05, 120);
+if((isIOS&&!isStandalone)||new URLSearchParams(location.search).get('preview')==='install')els.installTip.classList.remove('hidden');
+els.installTip.onclick=()=>els.installGuide.classList.remove('hidden');
+document.querySelectorAll('[data-close="install"]').forEach(button=>button.onclick=()=>els.installGuide.classList.add('hidden'));
+function requestGameFullscreen(){
+  if(!isTouch||isIOS||isStandalone||!document.fullscreenEnabled||document.fullscreenElement)return;
+  document.documentElement.requestFullscreen({navigationUI:'hide'}).catch(()=>{});
+}
+
+const initialViewport=viewportSize();
+const camera = new THREE.PerspectiveCamera(68, initialViewport.width / initialViewport.height, 0.05, 120);
 camera.position.set(0, 1.72, 15);
 const renderer = new THREE.WebGLRenderer({ antialias: !isTouch, powerPreference: 'high-performance' });
-renderer.setSize(innerWidth, innerHeight);
+renderer.setSize(initialViewport.width, initialViewport.height);
 renderer.setPixelRatio(Math.min(devicePixelRatio, isTouch ? 1.45 : 1.85));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -47,7 +63,7 @@ const keys = {};
 const balloons = [];
 const clouds = [];
 let started = false, doorOpen = false, enteredHouse = false, metFinn = false, giftOpen = false;
-let activeInteraction = null, dialogueTimer = 0, toastTimer = 0, pageSpread = 0;
+let activeInteraction = null, dialogueTimer = 0, toastTimer = 0, pageSpread = 0, mobilePage = 0;
 let draggingLook = false, lookPointer = null, lastLookX = 0, lastLookY = 0, bookTurning = false;
 let audioCtx = null, masterGain = null, musicBus = null, musicTimer = null, musicStep = 0, muted = false;
 
@@ -304,13 +320,13 @@ let lastSparkleTime=0;const giftCenter=new THREE.Vector3(.55,1.8,-2.55);
 function sparkleNearGift(elapsed){if(!audioCtx||muted||giftOpen||!enteredHouse)return;const d=camera.position.distanceTo(giftCenter);if(d<4.5&&elapsed-lastSparkleTime>2.8){lastSparkleTime=elapsed;const now=audioCtx.currentTime,o1=audioCtx.createOscillator(),g1=audioCtx.createGain();o1.type='sine';o1.frequency.setValueAtTime(1200+Math.random()*400,now);o1.frequency.exponentialRampToValueAtTime(800+Math.random()*200,now+.35);g1.gain.setValueAtTime(.035,now);g1.gain.exponentialRampToValueAtTime(.001,now+.42);o1.connect(g1);g1.connect(masterGain);o1.start(now);o1.stop(now+.5);}}
 
 function startGame(){
-  if(started)return;started=true;setupAudio();els.intro.classList.add('leaving');
+  if(started)return;started=true;requestGameFullscreen();setupAudio();els.intro.classList.add('leaving');
   setTimeout(()=>{els.intro.classList.remove('visible','leaving');els.hud.classList.remove('hidden');if(isTouch)els.mobileControls.classList.remove('hidden');},reducedMotion?20:520);
   setObjective('ដើរតាមស្ករវង់មូលនឹងទៅ!');
 }
 function openDoor(){ if(doorOpen)return; doorOpen=true; synth('open'); setObjective('Go in bitchh!'); burstConfetti(new THREE.Vector3(0,3.5,3.8),45); setTimeout(()=>burstConfetti(new THREE.Vector3(0,4.3,3.4),25),220); }
 function openGift(){ if(giftOpen)return; giftOpen=true; synth('gift'); setObjective('Opened'); burstConfetti(new THREE.Vector3(.55,2.3,-2.55),isTouch?75:115); book3d.visible=true; showDialogue('Happy 19th birthday, Mi Kaaa! I made this little book for you, hope u like it!',5); setTimeout(openBook,1250); }
-function openBook(){ if(!giftOpen)return; clearKeys(); draggingLook=false; els.pause.classList.remove('visible'); els.bookModal.classList.remove('hidden'); pageSpread=0; renderBook(); }
+function openBook(){ if(!giftOpen)return; clearKeys(); draggingLook=false; els.pause.classList.remove('visible'); els.bookModal.classList.remove('hidden'); document.body.classList.add('book-open'); pageSpread=0; mobilePage=0; renderBook(); }
 
 const spreads=[
   [
@@ -398,6 +414,8 @@ const spreads=[
     `}
   ]
 ];
+const bookPages=spreads.flat();
+const singlePageBook=()=>mobileBookMedia.matches;
 function placeholderHTML(p){
   if(p.type==='custom') return p.html;
   if(p.type==='wishes') return `<div class="placeholder-card"><div class="wishes-lines"><span></span><span></span><span></span><span></span><span></span><em>Birthday wishes will be written here.</em><b class="slot-tag">${p.label}</b></div></div>`;
@@ -405,11 +423,14 @@ function placeholderHTML(p){
 }
 function pageHTML(p,number){return `<div class="turn-page-inner"><div class="page-kicker">${p.k}</div><h2>${p.t}</h2><div class="page-content">${placeholderHTML(p)}</div><div class="page-number">${String(number).padStart(2,'0')}</div></div>`;}
 function renderBook(index=pageSpread){
-  const [l,r]=spreads[index];
-  $('#left-kicker').textContent=l.k;$('#left-title').textContent=l.t;$('#left-content').innerHTML=placeholderHTML(l);$('#left-number').textContent=String(index*2+1).padStart(2,'0');
-  $('#right-kicker').textContent=r.k;$('#right-title').textContent=r.t;$('#right-content').innerHTML=placeholderHTML(r);$('#right-number').textContent=String(index*2+2).padStart(2,'0');
-  $('#prev-page').disabled=index===0||bookTurning;$('#next-page').disabled=index===spreads.length-1||bookTurning;
-  const dots=$('#page-dots');dots.innerHTML='';spreads.forEach((_,i)=>{const b=document.createElement('button');b.className=i===index?'active':'';b.ariaLabel=`Go to spread ${i+1}`;b.disabled=bookTurning;b.onclick=()=>turnPage(i);dots.appendChild(b);});
+  if(!singlePageBook())pageSpread=index;
+  else pageSpread=Math.floor(mobilePage/2);
+  const [l,r]=spreads[pageSpread],showLeft=mobilePage%2===0;
+  $('#left-kicker').textContent=l.k;$('#left-title').textContent=l.t;$('#left-content').innerHTML=placeholderHTML(l);$('#left-number').textContent=String(pageSpread*2+1).padStart(2,'0');
+  $('#right-kicker').textContent=r.k;$('#right-title').textContent=r.t;$('#right-content').innerHTML=placeholderHTML(r);$('#right-number').textContent=String(pageSpread*2+2).padStart(2,'0');
+  els.book.classList.toggle('single-page',singlePageBook());els.book.classList.toggle('page-left',singlePageBook()&&showLeft);els.book.classList.toggle('page-right',singlePageBook()&&!showLeft);
+  $('#prev-page').disabled=(singlePageBook()?mobilePage===0:pageSpread===0)||bookTurning;$('#next-page').disabled=(singlePageBook()?mobilePage===bookPages.length-1:pageSpread===spreads.length-1)||bookTurning;
+  const dots=$('#page-dots');dots.innerHTML='';const dotItems=singlePageBook()?bookPages:spreads;dotItems.forEach((_,i)=>{const active=singlePageBook()?i===mobilePage:i===pageSpread,b=document.createElement('button');b.className=active?'active':'';b.ariaLabel=singlePageBook()?`Go to page ${i+1}`:`Go to spread ${i+1}`;b.disabled=bookTurning;b.onclick=()=>singlePageBook()?turnMobilePage(i):turnPage(i);dots.appendChild(b);});
 }
 function finishTurn(next){if(!bookTurning)return;pageSpread=next;bookTurning=false;els.turnSheet.className='page-turn-sheet';els.turnFront.innerHTML='';els.turnBack.innerHTML='';renderBook(pageSpread);}
 function turnPage(next){
@@ -422,6 +443,17 @@ function turnPage(next){
   els.turnSheet.addEventListener('animationend',()=>finishTurn(next),{once:true});
   if(reducedMotion)setTimeout(()=>finishTurn(next),20);
 }
+function finishMobileTurn(next){if(!bookTurning)return;mobilePage=next;pageSpread=Math.floor(next/2);bookTurning=false;els.turnSheet.className='page-turn-sheet';els.turnFront.innerHTML='';els.turnBack.innerHTML='';renderBook(pageSpread);}
+function turnMobilePage(next){
+  if(bookTurning||next<0||next>=bookPages.length||next===mobilePage)return;
+  bookTurning=true;const forwardTurn=next>mobilePage,current=bookPages[mobilePage],target=bookPages[next];
+  els.turnFront.innerHTML=pageHTML(current,mobilePage+1);els.turnBack.innerHTML=pageHTML(target,next+1);renderBook(pageSpread);
+  els.turnSheet.classList.add('active',forwardTurn?'turn-forward':'turn-backward');synth('page');
+  setTimeout(()=>{mobilePage=next;pageSpread=Math.floor(next/2);renderBook(pageSpread);},reducedMotion?1:360);
+  els.turnSheet.addEventListener('animationend',()=>finishMobileTurn(next),{once:true});
+  if(reducedMotion)setTimeout(()=>finishMobileTurn(next),20);
+}
+function stepBook(direction){if(singlePageBook())turnMobilePage(mobilePage+direction);else turnPage(pageSpread+direction);}
 
 const interactionTargets={door:new THREE.Vector3(0,1.9,4.2),gift:new THREE.Vector3(.55,1.8,-2.1),book:new THREE.Vector3(.55,2.2,-2.3)};
 const lookDirection=new THREE.Vector3(),targetDirection=new THREE.Vector3();
@@ -443,7 +475,7 @@ let mobileSprint=false,yaw=0,pitch=0,verticalOffset=0,verticalVelocity=0,grounde
 camera.position.set(playerPosition.x,EYE_HEIGHT,playerPosition.z);camera.rotation.order='YXZ';
 function clearKeys(){Object.keys(keys).forEach(k=>keys[k]=false);}
 function clearInput(){clearKeys();mobileMove.set(0,0);horizontalVelocity.set(0,0,0);if(els.stickThumb)els.stickThumb.style.transform='translate3d(0,0,0)';}
-function gameplayBlocked(){return els.pause.classList.contains('visible')||!els.bookModal.classList.contains('hidden')||!els.help.classList.contains('hidden')||!els.passcodeModal.classList.contains('hidden');}
+function gameplayBlocked(){return els.pause.classList.contains('visible')||!els.bookModal.classList.contains('hidden')||!els.help.classList.contains('hidden')||!els.passcodeModal.classList.contains('hidden')||!els.installGuide.classList.contains('hidden');}
 function positionBlocked(x,z){
   if(x<-17||x>17||z<-7.7||z>22)return true;
   if(z<4.58&&z>4.02&&(!doorOpen||Math.abs(x)>1.17))return true;
@@ -468,9 +500,10 @@ els.mobileSprint.addEventListener('pointerdown',e=>{e.preventDefault();mobileSpr
 els.mobileJump.addEventListener('pointerdown',e=>{e.preventDefault();requestJump();});els.mobileInteract.addEventListener('pointerdown',e=>{e.preventDefault();interact();});
 addEventListener('keydown',e=>{
   if(['KeyW','KeyA','KeyS','KeyD','KeyE','ShiftLeft','ShiftRight','Space','Escape','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
-  if(!els.bookModal.classList.contains('hidden')){if(e.code==='ArrowLeft')turnPage(pageSpread-1);if(e.code==='ArrowRight')turnPage(pageSpread+1);if(e.code==='Escape')$('#book-close').click();return;}
+  if(!els.bookModal.classList.contains('hidden')){if(e.code==='ArrowLeft')stepBook(-1);if(e.code==='ArrowRight')stepBook(1);if(e.code==='Escape')$('#book-close').click();return;}
   if(!els.help.classList.contains('hidden')){if(e.code==='Escape')$('[data-close="help"]').click();return;}
   if(!els.passcodeModal.classList.contains('hidden')){if(e.code==='Escape')$('[data-close="passcode"]').click();return;}
+  if(!els.installGuide.classList.contains('hidden')){if(e.code==='Escape')$('[data-close="install"]').click();return;}
   if(e.code==='Escape'&&started){clearInput();clearLook();els.pause.classList.toggle('visible');return;}
   if(gameplayBlocked())return;keys[e.code]=true;if(e.code==='KeyE'&&!e.repeat)interact();if(e.code==='Space'&&!e.repeat)requestJump();
 });
@@ -481,8 +514,8 @@ $('[data-close="passcode"]').onclick=()=>{clearInput();els.passcodeModal.classLi
 els.passcodeSubmit.onclick=()=>{if(els.passcodeInput.value==='230907'){els.passcodeModal.classList.add('hidden');openDoor();}else{els.passcodeError.style.display='block';synth('ping');}};
 els.passcodeInput.onkeydown=e=>{if(e.code==='Enter')els.passcodeSubmit.click();};
 els.sound.onclick=()=>{muted=!muted;els.sound.classList.toggle('muted',muted);els.sound.setAttribute('aria-pressed',String(muted));els.sound.textContent=muted?'♪':'♫';if(audioCtx?.state==='suspended'&&!muted)audioCtx.resume();if(masterGain)masterGain.gain.setTargetAtTime(muted?0:.18,audioCtx.currentTime,.04);};
-$('#book-close').onclick=()=>{clearInput();els.bookModal.classList.add('hidden');};$('#prev-page').onclick=()=>turnPage(pageSpread-1);$('#next-page').onclick=()=>turnPage(pageSpread+1);
-let bookSwipeStart=null;els.book.addEventListener('pointerdown',e=>bookSwipeStart=e.clientX);els.book.addEventListener('pointerup',e=>{if(bookSwipeStart==null)return;const d=e.clientX-bookSwipeStart;bookSwipeStart=null;if(Math.abs(d)>55)turnPage(pageSpread+(d<0?1:-1));});
+$('#book-close').onclick=()=>{clearInput();els.bookModal.classList.add('hidden');document.body.classList.remove('book-open');};$('#prev-page').onclick=()=>stepBook(-1);$('#next-page').onclick=()=>stepBook(1);
+let bookSwipeStart=null;els.book.addEventListener('pointerdown',e=>bookSwipeStart=e.clientX);els.book.addEventListener('pointerup',e=>{if(bookSwipeStart==null)return;const d=e.clientX-bookSwipeStart;bookSwipeStart=null;if(Math.abs(d)>55)stepBook(d<0?1:-1);});
 function updatePlayer(dt){
   if(!started||gameplayBlocked())return;
   const inputX=THREE.MathUtils.clamp((Number(Boolean(keys.KeyD))-Number(Boolean(keys.KeyA)))+mobileMove.x,-1,1),inputZ=THREE.MathUtils.clamp((Number(Boolean(keys.KeyW))-Number(Boolean(keys.KeyS)))+mobileMove.y,-1,1),hasInput=Math.abs(inputX)+Math.abs(inputZ)>.04,sprinting=hasInput&&(keys.ShiftLeft||keys.ShiftRight||mobileSprint);
@@ -516,7 +549,11 @@ function animate(){
 }
 animate();
 
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,isTouch?1.35:1.85));renderer.setSize(innerWidth,innerHeight);clearInput();});
+function resizeExperience(){
+  syncAppHeight();const {width,height}=viewportSize();camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,isTouch?1.35:1.85));renderer.setSize(width,height,false);
+}
+addEventListener('resize',resizeExperience);addEventListener('orientationchange',()=>{clearInput();setTimeout(resizeExperience,120);});window.visualViewport?.addEventListener('resize',resizeExperience);document.addEventListener('fullscreenchange',resizeExperience);
+mobileBookMedia.addEventListener?.('change',()=>{if(els.bookModal.classList.contains('hidden'))return;mobilePage=pageSpread*2;renderBook(pageSpread);});
 
 // Non-advertised art-direction views for reviewing the scene without changing game progress.
 const previewStage=new URLSearchParams(location.search).get('preview');
@@ -525,6 +562,6 @@ if(previewStage==='finn'||previewStage==='book'){
   els.intro.classList.remove('visible');els.hud.classList.remove('hidden');
   playerPosition.set(0,0,.6);camera.position.set(0,EYE_HEIGHT,.6);yaw=0;pitch=0;camera.lookAt(0,1.8,-4.1);setObjective('Open the gift on the table');
   if(previewStage==='book'){
-    giftOpen=true;book3d.visible=true;els.bookModal.classList.remove('hidden');renderBook();
+    giftOpen=true;book3d.visible=true;els.bookModal.classList.remove('hidden');document.body.classList.add('book-open');mobilePage=0;renderBook();
   }
 }

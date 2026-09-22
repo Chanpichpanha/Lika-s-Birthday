@@ -1,0 +1,19 @@
+{
+  "name": "Lika's Birthday Surprise",
+  "short_name": "Lika's Surprise",
+  "description": "A candy-house birthday adventure made by Finn for Tra Rothlika.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8b9ca",
+  "theme_color": "#f9a8c2",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/candy-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
