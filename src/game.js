@@ -27,6 +27,16 @@ const viewportSize=()=>({width:els.game.clientWidth,height:els.game.clientHeight
 function syncAppHeight(){document.documentElement.style.setProperty('--app-height',`${viewportSize().height}px`);}
 syncAppHeight();
 
+function checkOrientation(){
+  if(!isTouch) return;
+  const isLandscape = Math.abs(window.orientation) === 90 || screen.width > screen.height;
+  document.body.classList.toggle('is-landscape-mobile', isLandscape);
+}
+addEventListener('resize', checkOrientation);
+addEventListener('orientationchange', checkOrientation);
+checkOrientation();
+
+const singlePageBook = () => mobileBookMedia.matches;
 const introCard=$('.intro-card'),startButton=$('#start-btn');
 if(!isTouch&&!reducedMotion){
   let pointerFrame=0,pointerX=0,pointerY=0;
