@@ -550,7 +550,7 @@ function animate(){
 animate();
 
 function resizeExperience(){
-  syncAppHeight();const {width,height}=viewportSize();camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,isTouch?1.35:1.85));renderer.setSize(width,height,false);
+  syncAppHeight();const {width,height}=viewportSize();camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,isTouch?1.35:1.85));renderer.setSize(width,height);
 }
 addEventListener('resize',resizeExperience);addEventListener('orientationchange',()=>{clearInput();setTimeout(resizeExperience,120); setTimeout(resizeExperience,300); setTimeout(resizeExperience,600); }); window.visualViewport?.addEventListener('resize',resizeExperience);document.addEventListener('fullscreenchange',resizeExperience);
 mobileBookMedia.addEventListener?.('change',()=>{if(els.bookModal.classList.contains('hidden'))return;mobilePage=pageSpread*2;renderBook(pageSpread);});
