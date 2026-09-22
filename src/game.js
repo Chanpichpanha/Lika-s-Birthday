@@ -50,9 +50,9 @@ const camera = new THREE.PerspectiveCamera(68, initialViewport.width / initialVi
 camera.position.set(0, 1.72, 15);
 const renderer = new THREE.WebGLRenderer({ antialias: !isTouch, powerPreference: 'high-performance' });
 renderer.setSize(initialViewport.width, initialViewport.height);
-renderer.setPixelRatio(Math.min(devicePixelRatio, isTouch ? 1.45 : 1.85));
+renderer.setPixelRatio(Math.min(devicePixelRatio, isTouch ? 1.45 : 1.25));
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.14;
@@ -268,7 +268,7 @@ const nameTag=nameSprite('FINN'); nameTag.position.set(0,3.85,0); finn.add(nameT
 
 // One instanced confetti system keeps the reveal light on mobile GPUs.
 const MAX_CONFETTI=isTouch?90:150,confetti=[];
-const confettiGeo=new THREE.BoxGeometry(.045,.14,.025),confettiMat=new THREE.MeshBasicMaterial({vertexColors:true,toneMapped:false});
+const confettiGeo=new THREE.BoxGeometry(.045,.14,.025),confettiMat=new THREE.MeshBasicMaterial({toneMapped:false});
 const confettiMesh=new THREE.InstancedMesh(confettiGeo,confettiMat,MAX_CONFETTI),confettiDummy=new THREE.Object3D();
 confettiMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);confettiMesh.count=0;confettiMesh.frustumCulled=false;scene.add(confettiMesh);
 const confettiColors=[C.pink,C.mint,C.purple,C.gold,C.blue];
@@ -550,7 +550,7 @@ function animate(){
 animate();
 
 function resizeExperience(){
-  syncAppHeight();const {width,height}=viewportSize();camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,isTouch?1.35:1.85));renderer.setSize(width,height);
+  syncAppHeight();const {width,height}=viewportSize();camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,isTouch?1.35:1.25));renderer.setSize(width,height);
 }
 addEventListener('resize',resizeExperience);addEventListener('orientationchange',()=>{clearInput();setTimeout(resizeExperience,120); setTimeout(resizeExperience,300); setTimeout(resizeExperience,600); }); window.visualViewport?.addEventListener('resize',resizeExperience);document.addEventListener('fullscreenchange',resizeExperience);
 mobileBookMedia.addEventListener?.('change',()=>{if(els.bookModal.classList.contains('hidden'))return;mobilePage=pageSpread*2;renderBook(pageSpread);});

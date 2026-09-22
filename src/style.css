@@ -236,6 +236,10 @@ body.book-open .rotate-hint { display:none !important; }
   .install-card { padding:36px 23px 26px; }
 }
 @media (hover:hover) and (pointer:fine) { .mobile-controls { display:none !important; } }
-@media (orientation:portrait) and (max-width:520px) { .rotate-hint { display:block; position:fixed; z-index:70; bottom:max(8px,var(--safe-bottom)); left:50%; transform:translateX(-50%); background:rgba(56,38,56,.82); color:white; padding:7px 12px; border-radius:999px; font-size:9px; white-space:nowrap; pointer-events:none; animation:hintAway .6s 4s forwards; } .move-stick{width:112px;height:112px}.stick-thumb{width:52px;height:52px;left:30px;top:30px}.mobile-actions{grid-template-columns:repeat(2,58px);grid-template-rows:repeat(2,58px)} }
+@media (orientation:landscape) and (pointer:coarse) { .landscape-blocker { display:flex !important; } } .move-stick{width:112px;height:112px}.stick-thumb{width:52px;height:52px;left:30px;top:30px}.mobile-actions{grid-template-columns:repeat(2,58px);grid-template-rows:repeat(2,58px)} }
 @keyframes hintAway { to { opacity:0; visibility:hidden; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
+.landscape-blocker { display:none; position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#f8b9ca,#e8a4c0); flex-direction:column; align-items:center; justify-content:center; gap:16px; color:#5a2d42; font-family:'Fredoka',sans-serif; text-align:center; }
+.landscape-blocker .rotate-icon { font-size:48px; animation:spin-phone 2s ease-in-out infinite; }
+.landscape-blocker p { font-size:18px; font-weight:600; max-width:280px; line-height:1.5; }
+@keyframes spin-phone { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-90deg)} 50%,75%{transform:rotate(-90deg)} }
