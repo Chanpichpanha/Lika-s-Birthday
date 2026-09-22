@@ -29,7 +29,21 @@ syncAppHeight();
 
 function checkOrientation(){
   if(!isTouch) return;
-  const isLandscape = Math.abs(window.orientation) === 90 || screen.width > screen.height;
+  
+  // If the keyboard is open (passcode input focused), NEVER trigger the landscape blocker!
+  if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+    return;
+  }
+  
+  let isLandscape = false;
+  if (typeof window.orientation !== 'undefined') {
+    isLandscape = Math.abs(window.orientation) === 90;
+  } else if (screen && screen.orientation && screen.orientation.type) {
+    isLandscape = screen.orientation.type.startsWith('landscape');
+  } else {
+    isLandscape = window.innerWidth > window.innerHeight;
+  }
+  
   document.body.classList.toggle('is-landscape-mobile', isLandscape);
 }
 addEventListener('resize', checkOrientation);
